@@ -1,0 +1,10 @@
+log_level: debug
+db:
+  host: localhost
+  port: 5432
+  name: banner_rotation
+  username: banner_rotation
+  password: banner_rotation
+grpc_server:
+  host: localhost
+  port: 8082
