@@ -1,0 +1,42 @@
+name: banner-rotation CI
+
+on:
+  push: {}
+
+env:
+  GOLANG_VERSION: ~1.23
+
+
+jobs:
+  lint:
+    name: Run Linter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GOLANG_VERSION }}
+          cache: true
+          cache-dependency-path: go.mod
+
+      - name: Run Linter
+        run: make lint
+
+  test:
+    name: Run Tests
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GOLANG_VERSION }}
+          cache: true
+          cache-dependency-path: go.mod
+
+      - name: Run Tests
+        run: make test

@@ -1,3 +1,4 @@
+GOLANGCI_LINT_VERSION := "v1.63.4"
 MIGRATIONS_DIR := "./internal/storage/migrations"
 DB_DSN := "postgres://user:password@localhost:5432/banner_rotation?sslmode=disable"
 
@@ -7,7 +8,7 @@ test:
 	go test -race -count 100 ./internal/...
 
 install-lint-deps:
-	(which golangci-lint > /dev/null) || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.63.4
+	(which golangci-lint > /dev/null) || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin $(GOLANGCI_LINT_VERSION)
 
 lint: install-lint-deps
 	golangci-lint run ./...
