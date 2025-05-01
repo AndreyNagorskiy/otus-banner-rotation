@@ -1,8 +1,5 @@
 run:
   tests: true
-  build-tags:
-    - bench
-    - !bench
 
 linters-settings:
   funlen:
@@ -12,15 +9,6 @@ linters-settings:
     case:
       rules:
         yaml: snake
-issues:
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - errcheck
-        - dupl
-        - gocyclo
-        - gosec
-
 linters:
   disable-all: true
   enable:
@@ -43,6 +31,8 @@ linters:
     - gofmt
     - gofumpt
     - goheader
+    - gomoddirectives
+    - gomodguard
     - goprintffuncname
     - gosec
     - gosimple
@@ -59,12 +49,16 @@ linters:
     - prealloc
     - predeclared
     - revive
+    - rowserrcheck
+    - sqlclosecheck
     - staticcheck
     - stylecheck
     - tagliatelle
     - thelper
+    - tparallel
     - typecheck
     - unconvert
     - unparam
     - unused
+    - wastedassign
     - whitespace

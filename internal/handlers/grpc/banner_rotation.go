@@ -40,7 +40,7 @@ func (h *BannerRotationHandler) RemoveBanner(
 	ctx context.Context,
 	req *pb.RemoveBannerRequest,
 ) (*pb.RemoveBannerResponse, error) {
-	err := h.app.AddBannerToSlot(ctx, req.SlotId, req.BannerId)
+	err := h.app.RemoveBannerFromSlot(ctx, req.SlotId, req.BannerId)
 	if err != nil {
 		if errors.Is(err, model.ErrSlotNotFound) || errors.Is(err, model.ErrBannerNotFound) {
 			return nil, status.Error(codes.InvalidArgument, err.Error())
