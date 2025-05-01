@@ -48,7 +48,7 @@ jobs:
 
   build:
       name: Build
-      needs: test  # Зависит от успеха тестов
+      needs: test
       runs-on: ubuntu-latest
       steps:
         - name: Check out code
@@ -61,5 +61,5 @@ jobs:
             cache: true
             cache-dependency-path: go.mod
 
+        - name: Make build
         - run: make build
-        - uses: make build
