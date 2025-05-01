@@ -12,14 +12,15 @@ jobs:
     name: Run Linter
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version: ${{ env.GOLANG_VERSION }}
           cache: true
           cache-dependency-path: go.mod
+
+      - name: Check out code
+        uses: actions/checkout@v4
 
       - name: Run Linter
         run: make lint
@@ -29,14 +30,15 @@ jobs:
     needs: lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version: ${{ env.GOLANG_VERSION }}
           cache: true
           cache-dependency-path: go.mod
+
+      - name: Check out code
+        uses: actions/checkout@v4
 
       - name: Run Tests
         run: make test
