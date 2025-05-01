@@ -52,7 +52,7 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - name: Check out code
-        - uses: actions/checkout@v4
+          uses: actions/checkout@v4
 
         - name: Set up Go
           uses: actions/setup-go@v4
@@ -62,4 +62,4 @@ jobs:
             cache-dependency-path: go.mod
 
         - name: Make build
-        - run: make build
+          run: make build
