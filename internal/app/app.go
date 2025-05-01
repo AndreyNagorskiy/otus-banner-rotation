@@ -21,10 +21,13 @@ type Repository interface {
 	GetBannerStats(ctx context.Context, slotID, groupID int64) ([]model.BannerStat, error)
 	SlotExists(ctx context.Context, slotID int64) (bool, error)
 	BannerExists(ctx context.Context, bannerID int64) (bool, error)
+	SocialGroupExists(ctx context.Context, bannerID int64) (bool, error)
 }
 
 type Application interface {
 	AddBannerToSlot(ctx context.Context, slotID, bannerID int64) error
+	RemoveBannerFromSlot(ctx context.Context, slotID, bannerID int64) error
+	RegisterClick(ctx context.Context, slotID, bannerID, groupID int64) error
 }
 
 func New(logger logger.Logger, rep Repository) *App {
@@ -35,6 +38,64 @@ func New(logger logger.Logger, rep Repository) *App {
 }
 
 func (a *App) AddBannerToSlot(ctx context.Context, slotID, bannerID int64) error {
+	err := a.checkSlotAndBannerExistence(ctx, slotID, bannerID)
+	if err != nil {
+		return err
+	}
+
+	err = a.rep.AddBannerToSlot(ctx, slotID, bannerID)
+	if err != nil {
+		a.logger.Error("failed to add banner to slot", "slotID", slotID, "bannerID", bannerID, "error", err.Error())
+	}
+
+	return err
+}
+
+func (a *App) RemoveBannerFromSlot(ctx context.Context, slotID, bannerID int64) error {
+	err := a.checkSlotAndBannerExistence(ctx, slotID, bannerID)
+	if err != nil {
+		return err
+	}
+
+	err = a.rep.RemoveBannerFromSlot(ctx, slotID, bannerID)
+	if err != nil {
+		a.logger.Error("failed to remove banner from slot", "slotID", slotID, "bannerID", bannerID, "error", err.Error())
+	}
+
+	return err
+}
+
+func (a *App) RegisterClick(ctx context.Context, slotID, bannerID, groupID int64) error {
+	err := a.checkSlotAndBannerExistence(ctx, slotID, bannerID)
+	if err != nil {
+		return err
+	}
+
+	socialGroupExists, err := a.rep.SocialGroupExists(ctx, groupID)
+	if err != nil {
+		a.logger.Error("failed to check social group existence", "groupID", groupID, "error", err.Error())
+		return err
+	}
+
+	if !socialGroupExists {
+		return model.ErrSocialGroupNotFound
+	}
+
+	err = a.rep.IncrementClick(ctx, slotID, bannerID, groupID)
+	if err != nil {
+		a.logger.Error(
+			"failed to register click",
+			"slotID", slotID,
+			"bannerID", bannerID,
+			"groupID", groupID,
+			"error", err.Error(),
+		)
+	}
+
+	return err
+}
+
+func (a *App) checkSlotAndBannerExistence(ctx context.Context, slotID, bannerID int64) error {
 	slotExists, err := a.rep.SlotExists(ctx, slotID)
 	if err != nil {
 		a.logger.Error("failed to check slot existence", "slotID", slotID, "error", err.Error())
@@ -55,10 +116,5 @@ func (a *App) AddBannerToSlot(ctx context.Context, slotID, bannerID int64) error
 		return model.ErrBannerNotFound
 	}
 
-	err = a.rep.AddBannerToSlot(ctx, slotID, bannerID)
-	if err != nil {
-		a.logger.Error("failed to add banner to slot", "slotID", slotID, "bannerID", bannerID, "error", err.Error())
-	}
-
-	return err
+	return nil
 }

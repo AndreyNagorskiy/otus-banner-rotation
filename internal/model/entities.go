@@ -3,8 +3,9 @@ package model
 import "errors"
 
 var (
-	ErrSlotNotFound   = errors.New("slot not found")
-	ErrBannerNotFound = errors.New("banner not found")
+	ErrSlotNotFound        = errors.New("slot not found")
+	ErrBannerNotFound      = errors.New("banner not found")
+	ErrSocialGroupNotFound = errors.New("social group not found")
 )
 
 type Slot struct {
