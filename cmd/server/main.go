@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/AndreyNagorskiy/otus-banner-rotation/internal/algorithms"
 	"github.com/AndreyNagorskiy/otus-banner-rotation/internal/app"
 	"github.com/AndreyNagorskiy/otus-banner-rotation/internal/handlers/grpc"
 	"github.com/AndreyNagorskiy/otus-banner-rotation/internal/logger"
@@ -41,9 +42,10 @@ func main() {
 	}
 	defer dbPool.Close()
 
-	// TODO bandit algorithm and RabbitMQ/Kafka
+	// TODO RabbitMQ/Kafka
 	rep := storage.NewRepository(dbPool)
-	bannerRotation := app.New(l, rep)
+	b := algorithms.BanditUCB1{}
+	bannerRotation := app.New(l, rep, &b)
 
 	grpcHandler := grpchandler.NewBannerRotationHandler(bannerRotation)
 	grpcServer := internalgrpc.NewServer(l, grpcHandler)

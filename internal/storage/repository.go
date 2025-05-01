@@ -26,6 +26,7 @@ func (r *Repository) SlotExists(ctx context.Context, slotID int64) (bool, error)
 	if err != nil {
 		return false, fmt.Errorf("failed to check slot existence: %w", err)
 	}
+
 	return exists, nil
 }
 
@@ -38,18 +39,20 @@ func (r *Repository) BannerExists(ctx context.Context, bannerID int64) (bool, er
 	if err != nil {
 		return false, fmt.Errorf("failed to check banner existence: %w", err)
 	}
+
 	return exists, nil
 }
 
-func (r *Repository) SocialGroupExists(ctx context.Context, bannerID int64) (bool, error) {
+func (r *Repository) SocialGroupExists(ctx context.Context, groupID int64) (bool, error) {
 	var exists bool
 	err := r.db.QueryRow(ctx,
-		"SELECT EXISTS(SELECT 1 FROM banners WHERE id = $1)",
-		bannerID,
+		"SELECT EXISTS(SELECT 1 FROM social_groups WHERE id = $1)",
+		groupID,
 	).Scan(&exists)
 	if err != nil {
 		return false, fmt.Errorf("failed to check social group existence: %w", err)
 	}
+
 	return exists, nil
 }
 

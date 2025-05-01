@@ -16,9 +16,10 @@ type Server struct {
 }
 
 func NewServer(logger logger.Logger, bannerRotationHandler pb.BannerRotationServiceServer) *Server {
-	s := grpc.NewServer()
+	s := grpc.NewServer(
+		grpc.UnaryInterceptor(loggingUnaryInterceptor(logger)),
+	)
 
-	// TODO logging middleware
 	pb.RegisterBannerRotationServiceServer(s, bannerRotationHandler)
 
 	reflection.Register(s)

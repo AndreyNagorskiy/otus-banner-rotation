@@ -74,6 +74,14 @@ func (h *BannerRotationHandler) GetBannerForSlot(
 	ctx context.Context,
 	req *pb.GetBannerRequest,
 ) (*pb.GetBannerResponse, error) {
-	//TODO implement
-	return nil, status.Error(codes.Unimplemented, "")
+	bannerID, err := h.app.GetBannerForSlot(ctx, req.SlotId, req.SocialGroupId)
+	if err != nil {
+		if errors.Is(err, model.ErrSlotNotFound) || errors.Is(err, model.ErrSocialGroupNotFound) {
+			return nil, status.Error(codes.InvalidArgument, err.Error())
+		}
+
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &pb.GetBannerResponse{BannerId: bannerID}, nil
 }
