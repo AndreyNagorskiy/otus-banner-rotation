@@ -3,7 +3,7 @@ GIT_HASH := $(shell git log --format="%h" -n 1)
 LDFLAGS := -X main.release="develop" -X main.buildDate=$(shell date -u +%Y-%m-%dT%H:%M:%S) -X main.gitHash=$(GIT_HASH)
 GOLANGCI_LINT_VERSION := "v1.63.4"
 MIGRATIONS_DIR := "./internal/storage/migrations"
-DB_DSN := "postgres://user:password@localhost:5432/banner_rotation?sslmode=disable"
+DB_DSN := "postgres://banner_rotation:banner_rotation@localhost:25433/banner_rotation?sslmode=disable"
 PROTO_OUT_DIR = pb/api
 
 build:
