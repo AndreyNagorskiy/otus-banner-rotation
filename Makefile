@@ -1,5 +1,4 @@
 BIN := "./bin/banner-rotation"
-CONFIG_PATH := "./configs/config.yaml"
 GIT_HASH := $(shell git log --format="%h" -n 1)
 LDFLAGS := -X main.release="develop" -X main.buildDate=$(shell date -u +%Y-%m-%dT%H:%M:%S) -X main.gitHash=$(GIT_HASH)
 GOLANGCI_LINT_VERSION := "v1.63.4"
@@ -9,9 +8,11 @@ PROTO_OUT_DIR = pb/api
 
 build:
 	go build -v -o $(BIN) -ldflags "$(LDFLAGS)" ./cmd/server
+run:
+	docker compose up
 
-run: build
-	$(BIN) -config $(CONFIG_PATH)
+run-bin: build
+	$(BIN)
 
 test:
 	go test -race -count 100 ./internal/...
@@ -45,4 +46,4 @@ migrate-status:
 migrate-create:
 	goose -dir $(MIGRATIONS_DIR) create $(name) sql
 
-.PHONY: test lint lint-fix generate-proto migrate-up migrate-down migrate-status migrate-create
+.PHONY: build run run-bin test lint lint-fix generate-proto migrate-up migrate-down migrate-status migrate-create

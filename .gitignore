@@ -28,4 +28,4 @@ Thumbs.db
 *.bak
 
 bin/
-configs/config.yaml
+.env

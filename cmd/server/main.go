@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"flag"
 	"log/slog"
 	"os/signal"
 	"syscall"
@@ -16,13 +15,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-var configFile string
-
 func main() {
-	flag.StringVar(&configFile, "config", "configs/config.yaml", "Path to configuration file")
-	flag.Parse()
-
-	cfg := MustLoad(configFile)
+	cfg := MustLoad()
 	l := logger.NewLogger(cfg.LogLevel)
 
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)

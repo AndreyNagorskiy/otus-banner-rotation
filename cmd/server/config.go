@@ -5,12 +5,14 @@ import (
 	"log"
 
 	"github.com/ilyakaznacheev/cleanenv"
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
 	LogLevel   string     `yaml:"log_level" env:"LOG_LEVEL" env-default:"info"`
 	DB         Database   `yaml:"db"`
 	GRPCServer GrpcServer `yaml:"grpc_server" env-prefix:"GRPC_"`
+	RabbitMQ   RabbitMQ   `yaml:"rabbitmq" env-prefix:"RABBITMQ_"`
 }
 
 type Database struct {
@@ -26,12 +28,20 @@ type GrpcServer struct {
 	Port int    `yaml:"port" env:"PORT" env-default:"8082"`
 }
 
-func MustLoad(cfgFilePath string) Config {
+type RabbitMQ struct {
+	Host     string `yaml:"host" env:"HOST" env-default:"localhost"`
+	Port     int    `yaml:"port" env:"PORT" env-default:"5672"`
+	Username string `yaml:"username" env:"USERNAME" env-default:"guest"`
+	Password string `yaml:"password" env:"PASSWORD" env-default:"guest"`
+}
+
+func MustLoad() Config {
 	var cfg Config
 
-	err := cleanenv.ReadConfig(cfgFilePath, &cfg)
-	if err != nil {
-		log.Fatalf("failed to read config: %v", err)
+	_ = godotenv.Load(".env")
+
+	if err := cleanenv.ReadEnv(&cfg); err != nil {
+		log.Fatalf("failed to read environment variables: %v", err)
 	}
 
 	return cfg
