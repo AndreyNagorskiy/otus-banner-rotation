@@ -3,10 +3,10 @@ package grpchandler
 import (
 	"context"
 	"errors"
-	pb "github.com/AndreyNagorskiy/otus-banner-rotation/pb/api/bannerrotation"
 	"testing"
 
 	"github.com/AndreyNagorskiy/otus-banner-rotation/internal/model"
+	pb "github.com/AndreyNagorskiy/otus-banner-rotation/pb/api/bannerrotation"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"google.golang.org/grpc/codes"
