@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package bannerrotation;
+
+option go_package = "github.com/AndreyNagorskiy/otus-banner-rotation/pb/api/bannerrotation;pb";
+
+service BannerRotationService {
+  rpc AddBanner(AddBannerRequest) returns (AddBannerResponse);
+  rpc RemoveBanner(RemoveBannerRequest) returns (RemoveBannerResponse);
+  rpc RegisterClick(RegisterClickRequest) returns (RegisterClickResponse);
+  rpc GetBannerForSlot(GetBannerRequest) returns (GetBannerResponse);
+}
+
+message AddBannerRequest {
+  int64 slot_id = 1;
+  int64 banner_id = 2;
+}
+
+message AddBannerResponse {}
+
+message RemoveBannerRequest {
+  int64 slot_id = 1;
+  int64 banner_id = 2;
+}
+
+message RemoveBannerResponse {}
+
+message RegisterClickRequest {
+  int64 slot_id = 1;
+  int64 banner_id = 2;
+  int64 social_group_id = 3;
+}
+
+message RegisterClickResponse {}
+
+message GetBannerRequest {
+  int64 slot_id = 1;
+  int64 social_group_id = 2;
+}
+
+message GetBannerResponse {
+  int64 banner_id = 1;
+}
