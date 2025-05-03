@@ -37,6 +37,7 @@ func (m *MockApplication) GetBannerForSlot(ctx context.Context, slotID, socialGr
 	return args.Get(0).(int64), args.Error(1)
 }
 
+//nolint:dupl
 func TestAddBanner(t *testing.T) {
 	tests := []struct {
 		name          string
@@ -95,6 +96,7 @@ func TestAddBanner(t *testing.T) {
 	}
 }
 
+//nolint:dupl
 func TestRemoveBanner(t *testing.T) {
 	tests := []struct {
 		name          string
