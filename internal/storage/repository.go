@@ -6,6 +6,7 @@ import (
 
 	"github.com/AndreyNagorskiy/otus-banner-rotation/internal/model"
 	"github.com/georgysavva/scany/v2/pgxscan"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -15,6 +16,10 @@ type Repository struct {
 
 func NewRepository(db *pgxpool.Pool) *Repository {
 	return &Repository{db: db}
+}
+
+func (r *Repository) BeginTx(ctx context.Context) (pgx.Tx, error) {
+	return r.db.Begin(ctx)
 }
 
 func (r *Repository) SlotExists(ctx context.Context, slotID int64) (bool, error) {
@@ -87,24 +92,34 @@ func (r *Repository) GetSlotBanners(ctx context.Context, slotID int64) ([]int64,
 	return ids, nil
 }
 
-func (r *Repository) IncrementImpression(ctx context.Context, slotID, bannerID, groupID int64) error {
-	_, err := r.db.Exec(ctx, `
-		INSERT INTO banner_stats (slot_id, banner_id, social_group_id, impressions, clicks)
-		VALUES ($1, $2, $3, 1, 0)
-		ON CONFLICT (slot_id, banner_id, social_group_id)
-		DO UPDATE SET impressions = banner_stats.impressions + 1
-	`, slotID, bannerID, groupID)
+func (r *Repository) IncrementImpressionTx(ctx context.Context, tx pgx.Tx, slotID, bannerID, groupID int64) error {
+	exec := r.db.Exec
+	if tx != nil {
+		exec = tx.Exec
+	}
+
+	_, err := exec(ctx, `
+        INSERT INTO banner_stats (slot_id, banner_id, social_group_id, impressions, clicks)
+        VALUES ($1, $2, $3, 1, 0)
+        ON CONFLICT (slot_id, banner_id, social_group_id)
+        DO UPDATE SET impressions = banner_stats.impressions + 1
+    `, slotID, bannerID, groupID)
 
 	return err
 }
 
-func (r *Repository) IncrementClick(ctx context.Context, slotID, bannerID, groupID int64) error {
-	_, err := r.db.Exec(ctx, `
-		INSERT INTO banner_stats (slot_id, banner_id, social_group_id, impressions, clicks)
-		VALUES ($1, $2, $3, 0, 1)
-		ON CONFLICT (slot_id, banner_id, social_group_id)
-		DO UPDATE SET clicks = banner_stats.clicks + 1
-	`, slotID, bannerID, groupID)
+func (r *Repository) IncrementClickTx(ctx context.Context, tx pgx.Tx, slotID, bannerID, groupID int64) error {
+	exec := r.db.Exec
+	if tx != nil {
+		exec = tx.Exec
+	}
+
+	_, err := exec(ctx, `
+        INSERT INTO banner_stats (slot_id, banner_id, social_group_id, impressions, clicks)
+        VALUES ($1, $2, $3, 0, 1)
+        ON CONFLICT (slot_id, banner_id, social_group_id)
+        DO UPDATE SET clicks = banner_stats.clicks + 1
+    `, slotID, bannerID, groupID)
 
 	return err
 }

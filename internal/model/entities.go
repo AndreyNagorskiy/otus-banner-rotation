@@ -1,6 +1,16 @@
 package model
 
-import "errors"
+import (
+	"errors"
+	"time"
+)
+
+type BannerEventType string
+
+const (
+	BannerEventTypeClick BannerEventType = "click"
+	BannerEventTypeView  BannerEventType = "view"
+)
 
 var (
 	ErrSlotNotFound        = errors.New("slot not found")
@@ -36,4 +46,12 @@ type BannerStat struct {
 	SocialGroupID int64 `db:"social_group_id"`
 	Impressions   int64 `db:"impressions"`
 	Clicks        int64 `db:"clicks"`
+}
+
+type BannerEvent struct {
+	Type        BannerEventType `json:"type"`
+	SlotID      int64           `json:"slotId"`
+	BannerID    int64           `json:"bannerId"`
+	SocialDemID int64           `json:"socialDemId"`
+	Timestamp   time.Time       `json:"timestamp"`
 }

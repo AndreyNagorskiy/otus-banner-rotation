@@ -33,6 +33,7 @@ type RabbitMQ struct {
 	Port     int    `yaml:"port" env:"PORT" env-default:"5672"`
 	Username string `yaml:"username" env:"USERNAME" env-default:"guest"`
 	Password string `yaml:"password" env:"PASSWORD" env-default:"guest"`
+	Vhost    string `yaml:"vhost" env:"VHOST" env-default:"/"`
 }
 
 func MustLoad() Config {
@@ -59,4 +60,13 @@ func (c *Config) MakeDBConnectionString() string {
 
 func (c *Config) MakeGRPCAddr() string {
 	return fmt.Sprintf("%s:%d", c.GRPCServer.Host, c.GRPCServer.Port)
+}
+
+func (c *Config) MakeAMQPConnectionString() string {
+	return fmt.Sprintf("amqp://%s:%s@%s:%d/%s",
+		c.RabbitMQ.Username,
+		c.RabbitMQ.Password,
+		c.RabbitMQ.Host,
+		c.RabbitMQ.Port,
+		c.RabbitMQ.Vhost)
 }
