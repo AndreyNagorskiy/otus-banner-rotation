@@ -145,6 +145,19 @@ func (a *App) GetBannerForSlot(ctx context.Context, slotID, socialGroupID int64)
 		return 0, model.ErrBannerNotFound
 	}
 
+	err = a.rep.IncrementImpression(ctx, slotID, bannerID, socialGroupID)
+	if err != nil {
+		a.logger.Error(
+			"failed to increment impression",
+			"slotID", slotID,
+			"bannerID", bannerID,
+			"groupID", socialGroupID,
+			"error", err.Error(),
+		)
+
+		return 0, err
+	}
+
 	return bannerID, nil
 }
 
