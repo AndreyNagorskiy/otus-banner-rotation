@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	BannerEventExchangeName = "banner_events"
+	BannerEventExchangeName = "banner_rotation.banner_events"
 )
 
 type App struct {
@@ -241,6 +241,8 @@ func (a *App) publishBannerEvent(ctx context.Context, bEvent model.BannerEvent) 
 		a.logger.Error("failed to publish banner event", "error", err.Error())
 		return err
 	}
+
+	a.logger.Debug("published banner event", "event", bEvent)
 
 	return nil
 }
